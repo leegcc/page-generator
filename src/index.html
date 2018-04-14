@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>
+    <%= htmlWebpackPlugin.options.title %>
+  </title>
+  <link data-name="vs/editor/editor.main" href="https://cdn.bootcss.com/monaco-editor/0.12.0/min/vs/editor/editor.main.css"
+    rel="stylesheet">
+
+</head>
+
+<body>
+  <div class="container">
+    <div id="json-editor"></div>
+    <div id="generated"></div>
+  </div>
+
+
+  <script src="/monaco-editor/min/vs/loader.js"></script>
+  <script> monacoRequire = require </script>
+</body>
+
+</html>
