@@ -1,6 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const webpack = require('webpack')
 
 module.exports = {
   entry: {
@@ -13,12 +14,17 @@ module.exports = {
   devtool: 'inline-source-map',
   devServer: {
     contentBase: './dist',
+    hot: true,
+    inline: true
   },
   module: {
     rules: [{
       test: /\.css$/,
       use: ['style-loader', 'css-loader']
-    }]
+    }, {
+      test: /\.mustache$/,
+      loader: 'mustache-loader'
+  }]
   },
   plugins: [
     new CleanWebpackPlugin(['dist']),
@@ -26,6 +32,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: '标题',
       template: './src/index.html'
-    })
+    }),
+    new webpack.HotModuleReplacementPlugin()
   ]
 }

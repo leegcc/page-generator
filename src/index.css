@@ -1,18 +1,33 @@
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
-  height: 100%;
-  display: flex;
-  overflow-y: hidden;
+    height: 100%;
+    width: 100%;
+    overflow: hide;
 }
 
-.container > * {
-  flex-grow: 1;
-  width: 100%;
-  box-sizing: border-box;
-  height: 100%;
+.container::after {
+    display: block;
+    content: '';
+    clear: both;
+}
+
+.editor {
+    width: 50%;
+    height: 100%;
+    float: left;
+    box-sizing: border-box;
+}
+
+#json-editor {
+    width: 40%;
+}
+
+#generated {
+    width: 60%;
 }

@@ -1,4 +1,6 @@
 import "./index.css"
+import _ from "lodash"
+import template from "./template.mustache"
 
 monacoRequire.config({ paths: { 'vs': '/monaco-editor/min/vs' } })
 
@@ -20,14 +22,29 @@ monacoRequire(['vs/editor/editor.main'], function () {
     value: ``,
     language: 'json',
     theme: 'default',
-    scrollBeyondLastLine: false
+    automaticLayout: true
   })
   
   const generated = monaco.editor.create(document.getElementById('generated'), {
-    value: ``,
-    language: 'json',
+    value: template({
+
+    }),
+    language: 'html',
     theme: 'default',
-    scrollBeyondLastLine: false
+    automaticLayout: true
   })
+
+  function generate(json) {
+    try {
+      const model = JSON.parse(json)
+      generated.setValue(template(model))
+    } catch (e) {
+      generated.setValue(e.toString())
+    }
+  }
+
+  editor.onDidChangeModelContent(_.debounce(() => {
+    generate(editor.getValue())
+  }, 300))
 })
 

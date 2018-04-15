@@ -1,0 +1,77 @@
+<html>
+<head>
+  <title>{{ title }}</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/style/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css">
+  <link rel="stylesheet" type="text/css" href="/js/daterangepicker/daterangepicker.css" />
+  <link rel="stylesheet" href="/style/manage.css">
+  <link rel="stylesheet" href="/buttons/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/style/views/table-view.css">
+  <script src="/js/jquery-1.8.2.min.js"></script>
+</head>
+<body>
+
+<div class="container-fluid">
+  #parse("/common/manage_header.html")
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="row-fluid">
+        <div class="span2">#parse("/common/manage_left_menu.html")</div>
+        <div class="span10 content-wrapper">
+          <ul class="breadcrumb">
+            <li><a href="/financialProductLiquidate.htm">委托投标清退</a></li>
+            <li><span class="divider">/</span></li>
+            <li class="active"><a href="/financialProductLiquidate.htm?cmd=liquidateAccounts&financialProductId=$financialProductId">投资用户</a></li>
+            <li><span class="divider">/</span></li>
+            <li class="active">匹配债权明细</li>
+          </ul>
+
+          #if(!$list || $list.isEmpty())
+            <div class="alert alert-info empty-tip">暂无数据。</div>
+          #else
+            <div class="table-view">
+              <table class="table table-hover table-bordered">
+                <thead>
+                <tr>
+                  <th>委托投标</th>
+                  <th>投资用户</th>
+                  <th>借款</th>
+                  <th>上次转让时间</th>
+                  <th>已匹配金额</th>
+                  <th>未匹配金额</th>
+                </tr>
+                </thead>
+                <tbody>
+                  #foreach($item in $list)
+                  <tr>
+                    <td>$item.financialProduct.title</td>
+                    <td><a target="_blank" href="/userinfo.htm?id=$item.user.id">$item.user.userName</a></td>
+                    <td><a target="_blank" href="/borrowinfo.htm?jid=$item.bidRequestId">$item.bidRequest.title</a></td>
+                    <td>$item.prevTransferTime</td>
+                    <td>$Utils.formatNumber($item.matchedAmount)</td>
+                    <td>$Utils.formatNumber($item.remainingAmount)</td>
+                  </tr>
+                  #end
+                </tbody>
+              </table>
+            </div>
+          #end
+          #if($list.size() > 0)
+            <p class="text-right">总行数：<strong class="text-success">$list.size()</strong></p>
+          #end
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+
+<script src="/js/daterangepicker/moment.min.js"></script>
+<script src="/js/daterangepicker/moment.zh-cn.js"></script>
+<script src="/js/daterangepicker/daterangepicker.js"></script>
+
+<script src="/js/views/menu-page.js"></script>
+<script src="/js/views/table-view.js"></script>
+</body>
+</html>
