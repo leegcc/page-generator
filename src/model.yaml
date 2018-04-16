@@ -1,0 +1,28 @@
+title: 委托投标清退
+breadcrumb:
+  - name: 委托投标清退
+    link: /financialProductLiquidate.htm
+  - name: 投资用户
+    link: /financialProductLiquidate.htm?cmd=liquidateAccounts&financialProductId=$financialProductId
+  - name: 匹配债权明细
+table:
+  - name: 委托投标
+    field: financialProduct.title
+    type: string
+  - name: 投资用户
+    field: user.userName
+    type: LoginInfo
+  - name: 借款
+    field: bidRequest.title
+    type: BidRequest
+  - name: 上次转让时间
+    field: prevTransferTime
+    type: long
+  - name: 已匹配金额
+    field: matchedAmount
+    type: amount
+  - name: 未匹配金额
+    field: remainingAmount
+    type: amount
+
+    

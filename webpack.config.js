@@ -18,13 +18,11 @@ module.exports = {
     inline: true
   },
   module: {
-    rules: [{
-      test: /\.css$/,
-      use: ['style-loader', 'css-loader']
-    }, {
-      test: /\.mustache$/,
-      loader: 'mustache-loader'
-  }]
+    rules: [
+      { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+      { test: /\.ejs$/, loader: 'ejs2-loader' },
+      { test: /\.mustache$/, loader: 'mustache-loader'}
+    ]
   },
   plugins: [
     new CleanWebpackPlugin(['dist']),

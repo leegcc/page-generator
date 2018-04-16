@@ -19,12 +19,9 @@
       <div class="row-fluid">
         <div class="span2">#parse("/common/manage_left_menu.html")</div>
         <div class="span10 content-wrapper">
-          <ul class="breadcrumb">
-            <li><a href="/financialProductLiquidate.htm">委托投标清退</a></li>
-            <li><span class="divider">/</span></li>
-            <li class="active"><a href="/financialProductLiquidate.htm?cmd=liquidateAccounts&financialProductId=$financialProductId">投资用户</a></li>
-            <li><span class="divider">/</span></li>
-            <li class="active">匹配债权明细</li>
+          <ul class="breadcrumb">{{#breadcrumb}}
+            {{{output}}}{{#divider}}
+            <li><span class="divider">/</span></li>{{/divider}}{{/breadcrumb}}
           </ul>
 
           #if(!$list || $list.isEmpty())
@@ -34,23 +31,17 @@
               <table class="table table-hover table-bordered">
                 <thead>
                 <tr>
-                  <th>委托投标</th>
-                  <th>投资用户</th>
-                  <th>借款</th>
-                  <th>上次转让时间</th>
-                  <th>已匹配金额</th>
-                  <th>未匹配金额</th>
+                  {{#table}}
+                  <th>{{name}}</th>
+                  {{/table}}
                 </tr>
                 </thead>
                 <tbody>
                   #foreach($item in $list)
                   <tr>
-                    <td>$item.financialProduct.title</td>
-                    <td><a target="_blank" href="/userinfo.htm?id=$item.user.id">$item.user.userName</a></td>
-                    <td><a target="_blank" href="/borrowinfo.htm?jid=$item.bidRequestId">$item.bidRequest.title</a></td>
-                    <td>$item.prevTransferTime</td>
-                    <td>$Utils.formatNumber($item.matchedAmount)</td>
-                    <td>$Utils.formatNumber($item.remainingAmount)</td>
+                  {{#table}}
+                    <td>{{{cell}}}</td>
+                  {{/table}}
                   </tr>
                   #end
                 </tbody>
@@ -58,7 +49,7 @@
             </div>
           #end
           #if($list.size() > 0)
-            <p class="text-right">总行数：<strong class="text-success">$list.size()</strong></p>
+            <p class="text-right">总行数：<strong class="text-success">$rows</strong></p>
           #end
         </div>
       </div>

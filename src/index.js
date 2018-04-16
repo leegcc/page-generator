@@ -1,10 +1,45 @@
 import "./index.css"
 import _ from "lodash"
 import template from "./template.mustache"
-import model from "./model.json"
+import modelYaml from "raw-loader!./model.yaml"
+import jsyaml from "js-yaml"
+
+function reconfigModel(model) {
+  return Object.assign({}, model, {
+    breadcrumb: model.breadcrumb.map(function(item, n) {
+      return Object.assign({}, item, {
+        divider: n !== model.breadcrumb.length - 1,
+        output: function() {
+          return this.link != null ? `<li><a href="${this.link}">${this.name}</a></li>` : `<li><a href="${this.link}">${this.name}</a></li>`
+        }
+      })
+    }),
+    table: function() {
+      return model.table.map(function(item) {
+        return {
+          name: item.name,
+          cell: function() {
+            const {type, field} = item
+            if (type === 'string' || type === 'long') {
+              return `$item.${field}`
+            }
+            if (type === 'LoginInfo') {
+              return `<a target="_blank" href="/userinfo.htm?id=$user.id">$item.${field}</a>`
+            }
+            if (type === 'BidRequest') {
+              return `<a target="_blank" href="/borrowinfo.htm?jid=$item.bidRequestId">$item.${field}</a>`
+            }
+            if (type === 'amount') {
+              return `$Utils.formatNumber($item.${field})`
+            }
+          }
+        }
+      })
+    }
+  })
+}
 
 monacoRequire.config({ paths: { 'vs': '/monaco-editor/min/vs' } })
-
 monacoRequire(['vs/editor/editor.main'], function () {
   // https://microsoft.github.io/monaco-editor/playground.html#customizing-the-appearence-tokens-and-colors
   // https://github.com/Microsoft/vscode/blob/93028e44ea7752bd53e2471051acbe6362e157e9/src/vs/editor/standalone/common/themes.ts
@@ -12,13 +47,16 @@ monacoRequire(['vs/editor/editor.main'], function () {
     base: 'vs-dark',
     inherit: true,
     rules: [
+      { background: '282C34' },
       { token: 'delimiter', foreground: 'bbbbbb' },
       { token: 'tag', foreground: 'e06c75' },
       { token: 'delimiter.html', foreground: 'bbbbbb' },
       { token: 'attribute.name', foreground: 'd19a66' },
-		  { token: 'attribute.value', foreground: '98c379' },
+      { token: 'attribute.value', foreground: '98c379' },
       { token: 'string.key.json', foreground: 'e06c75' },
       { token: 'string.value.json', foreground: '98c379' },
+      { token: 'type.yaml', foreground: 'e06c75' },
+      { token: 'string.yaml', foreground: '98c379' },
       { token: 'number', foreground: 'd19a66' }
     ],
     colors: {
@@ -56,6 +94,7 @@ monacoRequire(['vs/editor/editor.main'], function () {
       "list.inactiveSelectionForeground": "#D7DAE0",
       "notification.background": "#21252B",
       "pickerGroup.border": "#528BFF",
+      "scrollbar.shadow": "#00000000",
       "scrollbarSlider.background": "#4E566680",
       "scrollbarSlider.activeBackground": "#747D9180",
       "scrollbarSlider.hoverBackground": "#5A637580",
@@ -70,29 +109,27 @@ monacoRequire(['vs/editor/editor.main'], function () {
   })
 
   const editor = monaco.editor.create(document.getElementById('json-editor'), {
-    value: JSON.stringify(model, null, 2),
-    language: 'json',
+    value: modelYaml,
+    language: 'yaml',
     theme: 'default',
     automaticLayout: true,
     fontFamily: 'Consolas, STXihei, 微软雅黑, 华文细黑, "Microsoft YaHei", sans-serif',
-	  fontSize: 16,
+    fontSize: 16,
   })
 
   const generated = monaco.editor.create(document.getElementById('generated'), {
-    value: template({
-
-    }),
+    value: template(jsyaml.load(modelYaml)),
     language: 'html',
     theme: 'default',
     automaticLayout: true,
     fontFamily: 'Consolas, STXihei, 微软雅黑, 华文细黑, "Microsoft YaHei", sans-serif',
-	  fontSize: 16
+    fontSize: 16
   })
 
-  function generate(json) {
+  function generate(yaml) {
     try {
-      const model = JSON.parse(json)
-      generated.setValue(template(model))
+      const model = jsyaml.load(yaml)
+      generated.setValue(template(reconfigModel(model)))
     } catch (e) {
 
     }
